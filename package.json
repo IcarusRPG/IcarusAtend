@@ -1,0 +1,13 @@
+{
+  "name": "icarus-atend",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo base do Icarus Atend",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "check:structure": "node scripts/check-structure.mjs"
+  }
+}
