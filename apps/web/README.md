@@ -4,13 +4,21 @@ Aplicação web do Icarus Atend.
 
 ## Objetivo nesta fase
 
-Preparar base visual e estrutural da interface de atendimento.
+Disponibilizar uma base funcional de front-end com:
+- página inicial;
+- estrutura de rotas;
+- cliente de API para consumo de endpoints do backend.
+
+## Scripts
+
+- `npm run dev` — inicia servidor web local.
+- `npm run start` — inicia servidor web local.
 
 ## Estrutura
 
-- `src/components` — componentes específicos do app.
-- `src/pages` — páginas e rotas.
-- `src/services` — comunicação com API.
-- `src/hooks` — hooks reutilizáveis.
-- `src/styles` — estilos e tema local.
-- `src/lib` — utilidades.
+- `index.html` — entrada da aplicação.
+- `server.js` — servidor HTTP simples para ambiente local.
+- `src/main.js` — bootstrap da aplicação.
+- `src/routes` — resolução de rotas.
+- `src/pages` — páginas da aplicação.
+- `src/services` — integração com API.

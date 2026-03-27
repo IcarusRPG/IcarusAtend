@@ -4,13 +4,19 @@ Backend/API do Icarus Atend.
 
 ## Objetivo nesta fase
 
-Preparar base arquitetural e funcional para o MVP de atendimento.
+Disponibilizar uma base funcional de backend com:
+- endpoint de saúde (`GET /health`);
+- estrutura modular inicial (`auth`, `users`, `tickets`);
+- organização preparada para evolução dos domínios.
 
-## Estrutura
+## Scripts
 
-- `src/modules` — domínios de negócio.
-- `src/routes` — endpoints públicos.
-- `src/services` — orquestração de casos de uso.
-- `src/integrations` — adapters para integrações futuras.
-- `src/config` — bootstrap e configurações.
-- `src/common` — utilitários compartilhados.
+- `npm run dev` — inicia API local.
+- `npm run start` — inicia API local.
+
+## Endpoints iniciais
+
+- `GET /health`
+- `GET /api/auth/status`
+- `GET /api/users/status`
+- `GET /api/tickets/status`
