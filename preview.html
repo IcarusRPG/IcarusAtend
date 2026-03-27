@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Icarus Atend — Preview</title>
+    <style>
+      :root {
+        --ia-color-primary: #1f3c88;
+        --ia-color-secondary: #0ea5c6;
+        --ia-color-background: #f3f7fb;
+        --ia-color-surface: #ffffff;
+        --ia-color-accent: #1d4ed8;
+        --ia-color-text: #0f172a;
+        --ia-color-text-muted: #475569;
+        --ia-color-border: #d9e2ec;
+        --ia-color-success: #16a34a;
+        --ia-color-error: #dc2626;
+        --ia-color-warning: #d97706;
+        --ia-color-info: #0284c7;
+
+        --ia-space-sm: 0.75rem;
+        --ia-space-md: 1rem;
+        --ia-space-lg: 1.5rem;
+        --ia-space-xl: 2rem;
+
+        --ia-radius-sm: 8px;
+        --ia-radius-md: 12px;
+        --ia-radius-pill: 999px;
+
+        --ia-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+          sans-serif;
+        background: var(--ia-color-background);
+        color: var(--ia-color-text);
+      }
+
+      .ia-app-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        min-height: 100vh;
+      }
+
+      .ia-sidebar {
+        background: linear-gradient(180deg, var(--ia-color-primary), #14295e);
+        color: #f8fafc;
+        padding: var(--ia-space-lg) var(--ia-space-md);
+        position: fixed;
+        inset: 0 auto 0 0;
+        width: 260px;
+        overflow: auto;
+      }
+
+      .ia-logo {
+        display: flex;
+        align-items: center;
+        gap: var(--ia-space-sm);
+        margin-bottom: var(--ia-space-xl);
+      }
+
+      .ia-logo-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: var(--ia-radius-sm);
+        background: linear-gradient(130deg, var(--ia-color-secondary), #67e8f9);
+        box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+      }
+
+      .ia-logo span {
+        font-weight: 700;
+      }
+
+      .ia-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .ia-nav-item {
+        border: 0;
+        background: transparent;
+        color: #dbeafe;
+        text-align: left;
+        padding: 0.65rem 0.75rem;
+        border-radius: var(--ia-radius-sm);
+        cursor: default;
+        font-size: 0.95rem;
+      }
+
+      .ia-nav-item.is-active {
+        background: rgba(255, 255, 255, 0.14);
+        color: #fff;
+      }
+
+      .ia-main {
+        margin-left: 260px;
+        min-width: 0;
+      }
+
+      .ia-topbar {
+        height: 72px;
+        background: var(--ia-color-surface);
+        border-bottom: 1px solid var(--ia-color-border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 var(--ia-space-xl);
+      }
+
+      .ia-content {
+        padding: var(--ia-space-xl);
+        display: grid;
+        gap: var(--ia-space-lg);
+      }
+
+      .ia-grid {
+        display: grid;
+        gap: var(--ia-space-md);
+      }
+
+      .ia-grid.cols-3 {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .ia-grid.cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .ia-card {
+        background: var(--ia-color-surface);
+        border: 1px solid var(--ia-color-border);
+        border-radius: var(--ia-radius-md);
+        box-shadow: var(--ia-shadow-sm);
+      }
+
+      .ia-card-body {
+        padding: var(--ia-space-lg);
+      }
+
+      .ia-section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: var(--ia-space-md);
+      }
+
+      .ia-section-header h2,
+      .ia-section-header h3 {
+        margin: 0;
+      }
+
+      .ia-text-muted {
+        color: var(--ia-color-text-muted);
+      }
+
+      .ia-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: var(--ia-radius-pill);
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .ia-badge.info {
+        background: #e0f2fe;
+        color: #075985;
+      }
+
+      .ia-badge.success {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .ia-badge.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+
+      .ia-stat-label {
+        font-size: 0.8rem;
+        color: var(--ia-color-text-muted);
+        margin-bottom: 0.35rem;
+      }
+
+      .ia-stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+      }
+
+      .ia-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: grid;
+        gap: var(--ia-space-sm);
+      }
+
+      .ia-list-item {
+        border: 1px solid var(--ia-color-border);
+        border-radius: var(--ia-radius-sm);
+        padding: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .ia-empty {
+        border: 1px dashed #cbd5e1;
+        border-radius: var(--ia-radius-md);
+        padding: var(--ia-space-lg);
+        text-align: center;
+        color: var(--ia-color-text-muted);
+      }
+
+      .ia-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(130deg, var(--ia-color-secondary), var(--ia-color-accent));
+        color: #fff;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+      }
+
+      @media (max-width: 1080px) {
+        .ia-grid.cols-3,
+        .ia-grid.cols-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <script type="module">
+      const navItems = [
+        'Dashboard',
+        'Fila',
+        'Meus Atendimentos',
+        'Supervisão',
+        'Clientes',
+        'Administração',
+        'Logs',
+        'Configurações'
+      ];
+
+      const metrics = [
+        { label: 'Atendimentos em aberto', value: '42', footer: '+8 nas últimas 2h' },
+        { label: 'Em fila', value: '17', footer: '4 com prioridade alta' },
+        { label: 'Tempo médio (TMA)', value: '06m 14s', footer: '-12% vs. ontem' }
+      ];
+
+      const recentTickets = [
+        { id: 'ATD-1298', customer: 'Camila Torres', channel: 'Chat', status: 'Em andamento' },
+        { id: 'ATD-1297', customer: 'Rafael Moraes', channel: 'E-mail', status: 'Aguardando cliente' },
+        { id: 'ATD-1296', customer: 'Livraria Aurora', channel: 'Portal', status: 'Novo' }
+      ];
+
+      const create = (tag, className, text) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text) node.textContent = text;
+        return node;
+      };
+
+      const createCard = (...children) => {
+        const card = create('section', 'ia-card');
+        const body = create('div', 'ia-card-body');
+        children.forEach((child) => body.appendChild(child));
+        card.appendChild(body);
+        return card;
+      };
+
+      const createBadge = (label, tone = 'info') => create('span', `ia-badge ${tone}`, label);
+
+      const createSidebar = () => {
+        const sidebar = create('aside', 'ia-sidebar');
+
+        const logo = create('div', 'ia-logo');
+        const icon = create('div', 'ia-logo-icon');
+        const text = create('span', null, 'Icarus Atend');
+        logo.append(icon, text);
+
+        const nav = create('nav', 'ia-nav');
+        navItems.forEach((item, index) => {
+          const button = create('button', `ia-nav-item ${index === 0 ? 'is-active' : ''}`, item);
+          button.type = 'button';
+          nav.appendChild(button);
+        });
+
+        sidebar.append(logo, nav);
+        return sidebar;
+      };
+
+      const createTopbar = () => {
+        const topbar = create('header', 'ia-topbar');
+
+        const left = create('div');
+        const title = create('strong', null, 'Operação em tempo real');
+        const subtitle = create('p', 'ia-text-muted', 'Preview standalone para webhook n8n');
+        subtitle.style.margin = '0.2rem 0 0';
+        left.append(title, subtitle);
+
+        const right = create('div');
+        right.style.display = 'flex';
+        right.style.alignItems = 'center';
+        right.style.gap = '0.6rem';
+
+        right.append(createBadge('API mockada', 'success'));
+        right.append(create('span', 'ia-avatar', 'AS'));
+
+        topbar.append(left, right);
+        return topbar;
+      };
+
+      const createMetricCards = () => {
+        const grid = create('div', 'ia-grid cols-3');
+
+        metrics.forEach((metric) => {
+          const label = create('p', 'ia-stat-label', metric.label);
+          const value = create('p', 'ia-stat-value', metric.value);
+          const footer = create('p', 'ia-text-muted', metric.footer);
+          footer.style.margin = '0.45rem 0 0';
+
+          grid.appendChild(createCard(label, value, footer));
+        });
+
+        return grid;
+      };
+
+      const createRecentTickets = () => {
+        const header = create('div', 'ia-section-header');
+        const titleWrap = create('div');
+        const title = create('h2', null, 'Atendimentos recentes');
+        const subtitle = create('p', 'ia-text-muted', 'Últimas interações registradas no sistema');
+        subtitle.style.margin = '0.25rem 0 0';
+        titleWrap.append(title, subtitle);
+        header.appendChild(titleWrap);
+
+        const list = create('ul', 'ia-list');
+        const toneByStatus = {
+          'Em andamento': 'info',
+          'Aguardando cliente': 'warning',
+          Novo: 'success'
+        };
+
+        recentTickets.forEach((ticket) => {
+          const item = create('li', 'ia-list-item');
+          const left = create('div');
+          const strong = create('strong', null, `${ticket.id} · ${ticket.customer}`);
+          const channel = create('p', 'ia-text-muted', `Canal: ${ticket.channel}`);
+          channel.style.margin = '0.25rem 0 0';
+          left.append(strong, channel);
+          item.append(left, createBadge(ticket.status, toneByStatus[ticket.status] || 'info'));
+          list.appendChild(item);
+        });
+
+        return createCard(header, list);
+      };
+
+      const createOperationalOverview = () => {
+        const header = create('div', 'ia-section-header');
+        const left = create('div');
+        const title = create('h3', null, 'Visão geral operacional');
+        const subtitle = create('p', 'ia-text-muted', 'Resumo para supervisão e coordenação de atendimento');
+        subtitle.style.margin = '0.25rem 0 0';
+        left.append(title, subtitle);
+        header.appendChild(left);
+
+        const empty = create('div', 'ia-empty');
+        empty.innerHTML = `
+          <h3 style="margin-top:0;">Painéis adicionais em evolução</h3>
+          <p style="margin:0;">Este preview foi otimizado para resposta HTML única em webhook.</p>
+        `;
+
+        return createCard(header, empty);
+      };
+
+      const render = () => {
+        const app = document.getElementById('app');
+
+        const layout = create('div', 'ia-app-layout');
+        const main = create('div', 'ia-main');
+        const content = create('main', 'ia-content');
+
+        content.append(createMetricCards());
+
+        const split = create('div', 'ia-grid cols-2');
+        split.append(
+          createRecentTickets(),
+          createOperationalOverview()
+        );
+
+        content.append(split);
+
+        main.append(createTopbar(), content);
+        layout.append(createSidebar(), main);
+
+        app.appendChild(layout);
+      };
+
+      render();
+    </script>
+  </body>
+</html>
