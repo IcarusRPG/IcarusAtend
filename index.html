@@ -3,461 +3,1184 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Icarus Atend — Standalone Preview</title>
+    <title>Icarus Atend</title>
     <style>
-      html,
-      body {
-        margin: 0;
-        width: 100%;
-        min-height: 100%;
-        background: #f3f7fb;
+      /* ===== Base + tokens (consolidados de packages/ui) ===== */
+      :root {
+        --ia-color-primary: #1f3c88;
+        --ia-color-secondary: #0ea5c6;
+        --ia-color-background: #f3f7fb;
+        --ia-color-surface: #ffffff;
+        --ia-color-accent: #1d4ed8;
+        --ia-color-text: #0f172a;
+        --ia-color-text-muted: #475569;
+        --ia-color-border: #d9e2ec;
+        --ia-color-success: #16a34a;
+        --ia-color-error: #dc2626;
+        --ia-color-warning: #d97706;
+        --ia-color-info: #0284c7;
+        --ia-space-sm: 0.75rem;
+        --ia-space-md: 1rem;
+        --ia-space-lg: 1.5rem;
+        --ia-space-xl: 2rem;
+        --ia-radius-sm: 8px;
+        --ia-radius-md: 12px;
+        --ia-radius-pill: 999px;
       }
 
-      #ia-preview-root {
-        all: initial;
-        display: block;
-        width: 100%;
-        min-height: 100vh;
-        background: #f3f7fb;
-        color: #0f172a;
-        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
-          sans-serif;
-        line-height: 1.35;
-        letter-spacing: normal;
-        text-transform: none;
-      }
-
-      #ia-preview-root,
-      #ia-preview-root *,
-      #ia-preview-root *::before,
-      #ia-preview-root *::after {
+      * {
         box-sizing: border-box;
       }
 
-      #ia-preview-root .ia-app-layout {
-        display: flex;
-        width: 100%;
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+          sans-serif;
+        background: var(--ia-color-background);
+        color: var(--ia-color-text);
+      }
+
+      .ia-app-layout {
+        display: grid;
+        grid-template-columns: 260px 1fr;
         min-height: 100vh;
-        max-width: none !important;
       }
 
-      #ia-preview-root .ia-sidebar {
-        width: 260px;
-        min-width: 260px;
-        max-width: 260px;
-        background: linear-gradient(180deg, #1f3c88, #14295e);
+      .ia-sidebar {
+        background: linear-gradient(180deg, var(--ia-color-primary), #14295e);
         color: #f8fafc;
-        padding: 1.5rem 1rem;
+        padding: var(--ia-space-lg) var(--ia-space-md);
       }
 
-      #ia-preview-root .ia-logo {
+      .ia-logo {
         display: flex;
         align-items: center;
-        gap: 0.75rem;
-        margin-bottom: 2rem;
+        gap: var(--ia-space-sm);
+        margin-bottom: var(--ia-space-xl);
       }
 
-      #ia-preview-root .ia-logo-icon {
+      .ia-logo-fallback {
         width: 38px;
         height: 38px;
         border-radius: 8px;
-        background: linear-gradient(130deg, #0ea5c6, #67e8f9);
+        background: linear-gradient(130deg, var(--ia-color-secondary), #67e8f9);
         box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
       }
 
-      #ia-preview-root .ia-logo-label {
-        font-size: 2rem;
+      .ia-logo span {
         font-weight: 700;
-        color: #fff;
-        line-height: 1;
       }
 
-      #ia-preview-root .ia-nav {
+      .ia-nav {
         display: flex;
         flex-direction: column;
         gap: 4px;
       }
 
-      #ia-preview-root .ia-nav-item {
+      .ia-nav-item {
         border: 0;
         background: transparent;
         color: #dbeafe;
         text-align: left;
         padding: 0.65rem 0.75rem;
-        border-radius: 8px;
-        cursor: default;
+        border-radius: var(--ia-radius-sm);
+        cursor: pointer;
         font-size: 0.95rem;
-        white-space: nowrap;
       }
 
-      #ia-preview-root .ia-nav-item.is-active {
+      .ia-nav-item:hover,
+      .ia-nav-item.is-active {
         background: rgba(255, 255, 255, 0.14);
         color: #fff;
       }
 
-      #ia-preview-root .ia-main {
-        flex: 1;
+      .ia-main {
         min-width: 0;
-        max-width: none !important;
-        display: flex;
-        flex-direction: column;
       }
 
-      #ia-preview-root .ia-topbar {
-        height: 72px;
-        background: #fff;
-        border-bottom: 1px solid #d9e2ec;
+      .ia-topbar {
+        background: var(--ia-color-surface);
+        border-bottom: 1px solid var(--ia-color-border);
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 2rem;
-      }
-
-      #ia-preview-root .ia-topbar-title {
-        font-size: 1.05rem;
-        font-weight: 700;
-        margin: 0;
-      }
-
-      #ia-preview-root .ia-topbar-subtitle {
-        margin: 0.2rem 0 0;
-        color: #475569;
-        font-size: 0.88rem;
-      }
-
-      #ia-preview-root .ia-topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 0.6rem;
-      }
-
-      #ia-preview-root .ia-content {
-        width: 100%;
-        max-width: none !important;
-        padding: 2rem;
-        display: grid;
-        gap: 1.5rem;
-      }
-
-      #ia-preview-root .ia-grid {
-        display: grid;
         gap: 1rem;
-        width: 100%;
+        padding: 1rem var(--ia-space-xl);
+        position: sticky;
+        top: 0;
+        z-index: 10;
       }
 
-      #ia-preview-root .ia-grid.cols-3 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+      .ia-content {
+        padding: var(--ia-space-xl);
+        display: grid;
+        gap: var(--ia-space-lg);
       }
 
-      #ia-preview-root .ia-grid.cols-2 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      #ia-preview-root .ia-card {
+      .ia-card {
         background: #fff;
-        border: 1px solid #d9e2ec;
-        border-radius: 12px;
+        border: 1px solid var(--ia-color-border);
+        border-radius: var(--ia-radius-md);
         box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
       }
 
-      #ia-preview-root .ia-card-body {
-        padding: 1.5rem;
+      .ia-card-body {
+        padding: 1rem;
       }
 
-      #ia-preview-root .ia-section-header {
+      .ia-text-muted {
+        color: var(--ia-color-text-muted);
+      }
+
+      .ia-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: var(--ia-radius-pill);
+        padding: 0.2rem 0.55rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+
+      .ia-badge.info {
+        background: #e0f2fe;
+        color: #075985;
+      }
+      .ia-badge.success {
+        background: #dcfce7;
+        color: #166534;
+      }
+      .ia-badge.warning {
+        background: #fef3c7;
+        color: #92400e;
+      }
+      .ia-badge.error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .ia-button {
+        border: 0;
+        border-radius: var(--ia-radius-sm);
+        padding: 0.6rem 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .ia-button.primary {
+        background: var(--ia-color-accent);
+        color: #fff;
+      }
+
+      .ia-button.secondary {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      .ia-input {
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid var(--ia-color-border);
+        padding: 0.65rem 0.75rem;
+        font: inherit;
+      }
+
+      /* ===== Layout operacional (consolidado de apps/web/src/styles/operational.css) ===== */
+      .op-topbar-actions {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        margin-bottom: 1rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
       }
 
-      #ia-preview-root .ia-section-title {
-        margin: 0;
-        font-size: 1.1rem;
+      .op-main-grid {
+        display: grid;
+        grid-template-columns: minmax(250px, 28%) minmax(340px, 42%) minmax(260px, 30%);
+        gap: 1rem;
+        min-height: calc(100vh - 160px);
+      }
+
+      .op-col {
+        display: grid;
+        gap: 0.75rem;
+        align-content: start;
+      }
+
+      .op-section-title {
+        margin: 0 0 0.65rem;
+        font-size: 1rem;
+      }
+
+      .op-ticket-list,
+      .op-my-tickets-list,
+      .op-grouped-queue,
+      .op-supervision-wrap {
+        display: grid;
+        gap: 0.6rem;
+      }
+
+      .op-ticket-item {
+        border: 1px solid var(--ia-color-border);
+        background: #fff;
+        border-radius: 10px;
+        padding: 0.65rem;
+        text-align: left;
+        cursor: pointer;
+        display: grid;
+        gap: 0.35rem;
+      }
+
+      .op-ticket-item.is-selected {
+        border-color: var(--ia-color-accent);
+        box-shadow: 0 0 0 2px rgba(29, 78, 216, 0.12);
+      }
+
+      .op-ticket-item-title {
         font-weight: 700;
       }
 
-      #ia-preview-root .ia-section-subtitle {
-        margin: 0.25rem 0 0;
-        color: #475569;
-        font-size: 0.9rem;
+      .op-ticket-item-subtitle,
+      .op-ticket-item-footer {
+        color: var(--ia-color-text-muted);
+        font-size: 0.85rem;
       }
 
-      #ia-preview-root .ia-stat-label {
-        margin: 0 0 0.35rem;
-        color: #475569;
-        font-size: 0.8rem;
+      .op-ticket-item-meta,
+      .op-badges-inline,
+      .op-composer-actions {
+        display: flex;
+        gap: 0.35rem;
+        flex-wrap: wrap;
       }
 
-      #ia-preview-root .ia-stat-value {
+      .op-counters {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.5rem;
+      }
+
+      .op-counter {
+        border: 1px solid var(--ia-color-border);
+        border-radius: 8px;
+        padding: 0.5rem;
+      }
+
+      .op-counter-label {
         margin: 0;
-        font-size: 1.5rem;
+        font-size: 0.78rem;
+        color: var(--ia-color-text-muted);
+      }
+
+      .op-counter-value {
+        margin: 0.2rem 0 0;
+        font-size: 1.3rem;
         font-weight: 700;
       }
 
-      #ia-preview-root .ia-text-muted {
-        margin: 0.45rem 0 0;
-        color: #475569;
+      .op-filter-label {
+        display: block;
+        margin: 0.5rem 0 0.25rem;
+        font-size: 0.85rem;
       }
 
-      #ia-preview-root .ia-list {
-        margin: 0;
-        padding: 0;
-        list-style: none;
+      .op-filter-select {
+        width: 100%;
+        padding: 0.55rem;
+        border-radius: 8px;
+        border: 1px solid var(--ia-color-border);
+      }
+
+      .op-conversation-body {
         display: grid;
         gap: 0.75rem;
       }
 
-      #ia-preview-root .ia-list-item {
-        border: 1px solid #d9e2ec;
-        border-radius: 8px;
-        padding: 0.75rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 0.75rem;
+      .op-timeline {
+        max-height: 52vh;
+        overflow-y: auto;
+        display: grid;
+        gap: 0.6rem;
+        padding-right: 0.2rem;
       }
 
-      #ia-preview-root .ia-ticket-title {
-        margin: 0;
-        font-weight: 700;
+      .op-message-bubble {
+        border: 1px solid var(--ia-color-border);
+        border-radius: 10px;
+        padding: 0.65rem;
+        display: grid;
+        gap: 0.3rem;
       }
 
-      #ia-preview-root .ia-ticket-subtitle {
-        margin: 0.25rem 0 0;
-        color: #475569;
+      .op-message-bubble.from-customer {
+        background: #eff6ff;
       }
 
-      #ia-preview-root .ia-badge {
-        display: inline-flex;
-        align-items: center;
-        border-radius: 999px;
-        padding: 0.2rem 0.55rem;
-        font-size: 0.75rem;
+      .op-message-bubble.from-agent {
+        background: #f8fafc;
+      }
+
+      .op-message-bubble.from-ai {
+        background: #ecfeff;
+        border-color: #a5f3fc;
+      }
+
+      .op-message-header {
+        font-size: 0.78rem;
+        color: var(--ia-color-text-muted);
         font-weight: 600;
-        white-space: nowrap;
       }
 
-      #ia-preview-root .ia-badge.info {
-        background: #e0f2fe;
-        color: #075985;
+      .op-message-content {
+        margin: 0;
       }
 
-      #ia-preview-root .ia-badge.success {
+      .op-message-time {
+        font-size: 0.75rem;
+        color: var(--ia-color-text-muted);
+      }
+
+      .op-system-message {
+        border-radius: 999px;
+        background: #f1f5f9;
+        color: #334155;
+        font-size: 0.82rem;
+        padding: 0.35rem 0.7rem;
+        display: inline-flex;
+        gap: 0.45rem;
+        width: fit-content;
+      }
+
+      .op-internal-note {
+        border: 1px dashed #f59e0b;
+        background: #fff7ed;
+        border-radius: 10px;
+        padding: 0.65rem;
+      }
+
+      .op-attachments-wrap,
+      .op-audit-list {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .op-attachment,
+      .op-audit-item,
+      .op-queue-group {
+        border: 1px solid var(--ia-color-border);
+        border-radius: 8px;
+        padding: 0.45rem;
+      }
+
+      .op-composer-footer {
+        margin-top: 0.75rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      .op-template-picker {
+        display: none;
+        margin-top: 0.5rem;
+        border: 1px solid var(--ia-color-border);
+        border-radius: 8px;
+        padding: 0.5rem;
+        background: #fff;
+      }
+
+      .op-template-picker.is-open {
+        display: grid;
+        gap: 0.4rem;
+      }
+
+      .op-template-btn {
+        border: 1px solid var(--ia-color-border);
+        border-radius: 8px;
+        padding: 0.45rem;
+        background: #f8fafc;
+        text-align: left;
+        cursor: pointer;
+      }
+
+      .op-context-list p {
+        margin: 0.3rem 0;
+      }
+
+      .op-sla-indicator {
+        margin-top: 0.5rem;
+        border-radius: 8px;
+        padding: 0.45rem 0.55rem;
+        font-weight: 600;
+      }
+
+      .op-sla-indicator.ok {
         background: #dcfce7;
         color: #166534;
       }
-
-      #ia-preview-root .ia-badge.warning {
+      .op-sla-indicator.warning {
         background: #fef3c7;
         color: #92400e;
       }
+      .op-sla-indicator.critical {
+        background: #fee2e2;
+        color: #991b1b;
+      }
 
-      #ia-preview-root .ia-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        background: linear-gradient(130deg, #0ea5c6, #1d4ed8);
-        color: #fff;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+      .op-supervision-grid,
+      .op-dashboard-grid {
+        display: grid;
+        gap: 0.8rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .op-stat-label {
+        margin: 0;
+        font-size: 0.8rem;
+        color: var(--ia-color-text-muted);
+      }
+
+      .op-stat-value {
+        margin: 0.2rem 0 0;
+        font-size: 1.4rem;
         font-weight: 700;
       }
 
-      #ia-preview-root .ia-empty {
-        border: 1px dashed #cbd5e1;
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: left;
-      }
-
-      #ia-preview-root .ia-empty-title {
-        margin: 0;
-        font-size: 1.05rem;
-      }
-
-      #ia-preview-root .ia-empty-description {
-        margin: 0.5rem 0 0;
-        color: #475569;
-      }
-
-      @media (max-width: 1080px) {
-        #ia-preview-root .ia-app-layout {
-          flex-direction: column;
+      @media (max-width: 1320px) {
+        .ia-app-layout {
+          grid-template-columns: 1fr;
         }
 
-        #ia-preview-root .ia-sidebar {
-          width: 100%;
-          max-width: none;
-          min-width: 0;
-        }
-
-        #ia-preview-root .ia-grid.cols-3,
-        #ia-preview-root .ia-grid.cols-2 {
+        .op-main-grid,
+        .op-supervision-grid,
+        .op-dashboard-grid {
           grid-template-columns: 1fr;
         }
       }
     </style>
   </head>
   <body>
-    <div id="ia-preview-root"></div>
+    <div id="app"></div>
 
-    <script type="module">
-      const navItems = [
-        'Dashboard',
-        'Fila',
-        'Meus Atendimentos',
-        'Supervisão',
-        'Clientes',
-        'Administração',
-        'Logs',
-        'Configurações'
-      ];
-
-      const metrics = [
-        { label: 'Atendimentos em aberto', value: '42', footer: '+8 nas últimas 2h' },
-        { label: 'Em fila', value: '17', footer: '4 com prioridade alta' },
-        { label: 'Tempo médio (TMA)', value: '06m14s', footer: '-12% vs. ontem' }
-      ];
-
-      const recentTickets = [
-        { id: 'ATD-1298', customer: 'Camila Torres', channel: 'Chat', status: 'Em andamento' },
-        { id: 'ATD-1297', customer: 'Rafael Moraes', channel: 'E-mail', status: 'Aguardando cliente' },
-        { id: 'ATD-1296', customer: 'Livraria Aurora', channel: 'Portal', status: 'Novo' }
-      ];
-
-      const create = (tag, className, text) => {
-        const el = document.createElement(tag);
-        if (className) el.className = className;
-        if (text !== undefined) el.textContent = text;
-        return el;
+    <script>
+      // ===== Enums e mocks consolidados de apps/web/src/lib/domain-mocks.js =====
+      const TicketStatus = {
+        NEW: 'NEW',
+        IN_QUEUE: 'IN_QUEUE',
+        IN_PROGRESS: 'IN_PROGRESS',
+        WAITING_CUSTOMER: 'WAITING_CUSTOMER',
+        TRANSFERRED: 'TRANSFERRED',
+        CLOSED: 'CLOSED'
       };
 
-      const createCard = (...children) => {
-        const card = create('div', 'ia-card');
-        const body = create('div', 'ia-card-body');
-        children.forEach((child) => body.appendChild(child));
+      const MessageType = {
+        TEXT: 'TEXT',
+        SYSTEM: 'SYSTEM',
+        INTERNAL_NOTE: 'INTERNAL_NOTE',
+        AUDIO: 'AUDIO',
+        IMAGE: 'IMAGE',
+        DOCUMENT: 'DOCUMENT'
+      };
+
+      const MessageSender = {
+        CUSTOMER: 'CUSTOMER',
+        AGENT: 'AGENT',
+        SYSTEM: 'SYSTEM',
+        AI: 'AI'
+      };
+
+      const TicketPriority = {
+        LOW: 'LOW',
+        MEDIUM: 'MEDIUM',
+        HIGH: 'HIGH',
+        CRITICAL: 'CRITICAL'
+      };
+
+      const HandoffStatus = {
+        PENDING: 'PENDING',
+        ACCEPTED: 'ACCEPTED',
+        REJECTED: 'REJECTED',
+        COMPLETED: 'COMPLETED'
+      };
+
+      const Channel = {
+        WHATSAPP: 'WHATSAPP',
+        WEBCHAT: 'WEBCHAT',
+        EMAIL: 'EMAIL',
+        API: 'API'
+      };
+
+      const users = [
+        { id: 'u-1', name: 'Ana Silva', email: 'ana@icarus.com', departmentIds: ['dep-cx'], roleIds: ['role-agent'] },
+        { id: 'u-2', name: 'Bruno Lima', email: 'bruno@icarus.com', departmentIds: ['dep-cx'], roleIds: ['role-agent'] },
+        { id: 'u-3', name: 'Carla Prado', email: 'carla@icarus.com', departmentIds: ['dep-supervisao'], roleIds: ['role-supervisor'] }
+      ];
+
+      const departments = [
+        { id: 'dep-cx', name: 'Atendimento CX', queueIds: ['queue-cx-geral'] },
+        { id: 'dep-fin', name: 'Financeiro', queueIds: ['queue-fin'] },
+        { id: 'dep-supervisao', name: 'Supervisão', queueIds: [] }
+      ];
+
+      const customers = [
+        { id: 'c-1', name: 'Camila Torres', identifier: '+55 11 98888-0001', channel: Channel.WHATSAPP, tags: ['vip', 'recorrente'] },
+        { id: 'c-2', name: 'Rafael Moraes', identifier: 'rafael@email.com', channel: Channel.EMAIL, tags: ['financeiro'] },
+        { id: 'c-3', name: 'Livraria Aurora', identifier: 'contato@aurora.com', channel: Channel.WEBCHAT, tags: ['b2b'] },
+        { id: 'c-4', name: 'Patrícia Nunes', identifier: '+55 21 97777-1000', channel: Channel.WHATSAPP, tags: ['novo-cliente'] }
+      ];
+
+      const tickets = [
+        {
+          id: 'ATD-1298',
+          customerId: 'c-1',
+          departmentId: 'dep-cx',
+          queueId: 'queue-cx-geral',
+          assignedUserId: 'u-1',
+          conversationId: 'conv-1',
+          status: TicketStatus.IN_PROGRESS,
+          priority: TicketPriority.HIGH,
+          channel: Channel.WHATSAPP,
+          startedByAI: true,
+          transferredToHuman: true,
+          subject: 'Atraso na entrega',
+          waitingMinutes: 6,
+          protocol: '2026-0001298',
+          slaMinutesRemaining: 24
+        },
+        {
+          id: 'ATD-1297',
+          customerId: 'c-2',
+          departmentId: 'dep-fin',
+          queueId: 'queue-fin',
+          assignedUserId: 'u-2',
+          conversationId: 'conv-2',
+          status: TicketStatus.WAITING_CUSTOMER,
+          priority: TicketPriority.MEDIUM,
+          channel: Channel.EMAIL,
+          startedByAI: false,
+          transferredToHuman: false,
+          subject: 'Dúvida de cobrança',
+          waitingMinutes: 42,
+          protocol: '2026-0001297',
+          slaMinutesRemaining: 80
+        },
+        {
+          id: 'ATD-1296',
+          customerId: 'c-3',
+          departmentId: 'dep-cx',
+          queueId: 'queue-cx-geral',
+          assignedUserId: null,
+          conversationId: 'conv-3',
+          status: TicketStatus.IN_QUEUE,
+          priority: TicketPriority.CRITICAL,
+          channel: Channel.WEBCHAT,
+          startedByAI: true,
+          transferredToHuman: false,
+          subject: 'Falha no checkout',
+          waitingMinutes: 19,
+          protocol: '2026-0001296',
+          slaMinutesRemaining: 8
+        },
+        {
+          id: 'ATD-1295',
+          customerId: 'c-4',
+          departmentId: 'dep-cx',
+          queueId: 'queue-cx-geral',
+          assignedUserId: null,
+          conversationId: 'conv-4',
+          status: TicketStatus.NEW,
+          priority: TicketPriority.LOW,
+          channel: Channel.WHATSAPP,
+          startedByAI: true,
+          transferredToHuman: false,
+          subject: 'Informações de plano',
+          waitingMinutes: 2,
+          protocol: '2026-0001295',
+          slaMinutesRemaining: 170
+        }
+      ];
+
+      const initialMessages = [
+        { id: 'm-1', ticketId: 'ATD-1298', sender: MessageSender.AI, type: MessageType.TEXT, content: 'Olá, sou o assistente virtual. Vou te ajudar com sua entrega.', createdAt: '09:12' },
+        { id: 'm-2', ticketId: 'ATD-1298', sender: MessageSender.CUSTOMER, type: MessageType.TEXT, content: 'Meu pedido atrasou dois dias.', createdAt: '09:13' },
+        { id: 'm-3', ticketId: 'ATD-1298', sender: MessageSender.SYSTEM, type: MessageType.SYSTEM, content: 'Handoff IA → humano iniciado.', createdAt: '09:14' },
+        { id: 'm-4', ticketId: 'ATD-1298', sender: MessageSender.AGENT, type: MessageType.TEXT, content: 'Oi Camila, já acionei o time logístico.', createdAt: '09:15' },
+        { id: 'm-5', ticketId: 'ATD-1298', sender: MessageSender.AGENT, type: MessageType.INTERNAL_NOTE, content: 'Cliente insatisfeita. Priorizar solução ainda hoje.', createdAt: '09:16' },
+        { id: 'm-6', ticketId: 'ATD-1298', sender: MessageSender.CUSTOMER, type: MessageType.IMAGE, content: 'Comprovante de prazo no app.', createdAt: '09:19', attachments: [{ id: 'a-1', fileName: 'screenshot-pedido.png', mimeType: 'image/png' }] },
+        { id: 'm-7', ticketId: 'ATD-1297', sender: MessageSender.CUSTOMER, type: MessageType.TEXT, content: 'A fatura veio em duplicidade.', createdAt: '08:02' },
+        { id: 'm-8', ticketId: 'ATD-1297', sender: MessageSender.AGENT, type: MessageType.TEXT, content: 'Enviei detalhes por e-mail, pode confirmar?', createdAt: '08:20' },
+        { id: 'm-9', ticketId: 'ATD-1296', sender: MessageSender.AI, type: MessageType.DOCUMENT, content: 'Relatório de erro coletado automaticamente.', createdAt: '09:05', attachments: [{ id: 'a-2', fileName: 'checkout-error-log.pdf', mimeType: 'application/pdf' }] }
+      ];
+
+      const handoffs = [
+        {
+          id: 'h-1',
+          ticketId: 'ATD-1298',
+          origem: 'AI',
+          destino: 'HUMAN',
+          resumoGeradoIA: 'Cliente relata atraso de entrega superior ao prazo prometido.',
+          intencaoDetectada: 'Acompanhar pedido',
+          prioridadeSugerida: TicketPriority.HIGH,
+          dadosColetadosCliente: { pedido: 'PED-8831', prazoPrometido: '2 dias úteis', atraso: '2 dias' },
+          status: HandoffStatus.ACCEPTED
+        }
+      ];
+
+      const auditLogs = [
+        { id: 'log-1', ticketId: 'ATD-1298', action: 'TICKET_TRANSFERRED_TO_HUMAN', at: '09:14', actor: 'SYSTEM' },
+        { id: 'log-2', ticketId: 'ATD-1298', action: 'AGENT_ASSIGNED', at: '09:15', actor: 'u-1' },
+        { id: 'log-3', ticketId: 'ATD-1298', action: 'INTERNAL_NOTE_CREATED', at: '09:16', actor: 'u-1' }
+      ];
+
+      // ===== Estado local (equivalente ao apps/web/src/state/app-state.js) =====
+      const state = {
+        currentView: 'atendimento',
+        selectedTicketId: tickets[0].id,
+        statusFilter: 'ALL',
+        priorityFilter: 'ALL',
+        messages: initialMessages.slice()
+      };
+
+      const maps = {
+        customersById: Object.fromEntries(customers.map((item) => [item.id, item])),
+        usersById: Object.fromEntries(users.map((item) => [item.id, item])),
+        departmentsById: Object.fromEntries(departments.map((item) => [item.id, item]))
+      };
+
+      // ===== Helpers/componentes standalone =====
+      const el = (tag, className, text) => {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+      };
+
+      const button = ({ label, variant = 'secondary', onClick }) => {
+        const btn = el('button', `ia-button ${variant}`, label);
+        btn.type = 'button';
+        if (onClick) btn.addEventListener('click', onClick);
+        return btn;
+      };
+
+      const badge = (label, tone = 'info') => el('span', `ia-badge ${tone}`, label);
+
+      const statusBadge = (status) => {
+        const tone = {
+          NEW: 'info',
+          IN_QUEUE: 'warning',
+          IN_PROGRESS: 'success',
+          WAITING_CUSTOMER: 'warning',
+          TRANSFERRED: 'info',
+          CLOSED: 'success'
+        }[status] || 'info';
+        return badge(status, tone);
+      };
+
+      const priorityBadge = (priority) => {
+        const tone = { LOW: 'success', MEDIUM: 'info', HIGH: 'warning', CRITICAL: 'error' }[priority] || 'info';
+        return badge(`Prioridade ${priority}`, tone);
+      };
+
+      const slaIndicator = (minutes) => {
+        const tone = minutes <= 10 ? 'critical' : minutes <= 30 ? 'warning' : 'ok';
+        return el('div', `op-sla-indicator ${tone}`, `SLA restante: ${minutes} min`);
+      };
+
+      const createStatCard = (label, value, footer) => {
+        const card = el('section', 'ia-card');
+        const body = el('div', 'ia-card-body');
+        body.append(el('p', 'op-stat-label', label), el('p', 'op-stat-value', String(value)), el('p', 'ia-text-muted', footer));
         card.appendChild(body);
         return card;
       };
 
-      const createBadge = (text, tone) => create('span', `ia-badge ${tone}`, text);
-
-      const createSidebar = () => {
-        const sidebar = create('div', 'ia-sidebar');
-
-        const logo = create('div', 'ia-logo');
-        logo.append(create('div', 'ia-logo-icon'), create('div', 'ia-logo-label', 'Icarus Atend'));
-
-        const nav = create('div', 'ia-nav');
-        navItems.forEach((item, index) => {
-          const navItem = create('button', `ia-nav-item ${index === 0 ? 'is-active' : ''}`, item);
-          navItem.type = 'button';
-          nav.appendChild(navItem);
+      // ===== Views =====
+      const filterTickets = () =>
+        tickets.filter((t) => {
+          const s = state.statusFilter === 'ALL' || t.status === state.statusFilter;
+          const p = state.priorityFilter === 'ALL' || t.priority === state.priorityFilter;
+          return s && p;
         });
 
-        sidebar.append(logo, nav);
-        return sidebar;
-      };
+      const renderTicketItem = (ticket) => {
+        const customer = maps.customersById[ticket.customerId];
+        const item = el('button', `op-ticket-item ${state.selectedTicketId === ticket.id ? 'is-selected' : ''}`);
+        item.type = 'button';
+        item.addEventListener('click', () => {
+          state.selectedTicketId = ticket.id;
+          state.currentView = 'atendimento';
+          renderApp();
+        });
 
-      const createTopbar = () => {
-        const topbar = create('div', 'ia-topbar');
+        const meta = el('div', 'op-ticket-item-meta');
+        meta.append(statusBadge(ticket.status), priorityBadge(ticket.priority));
 
-        const left = create('div');
-        left.append(
-          create('p', 'ia-topbar-title', 'Operação em tempo real'),
-          create('p', 'ia-topbar-subtitle', 'Preview standalone para webhook n8n')
+        item.append(
+          el('div', 'op-ticket-item-title', `${ticket.id} · ${customer.name}`),
+          el('div', 'op-ticket-item-subtitle', ticket.subject || 'Sem assunto'),
+          meta,
+          el('div', 'op-ticket-item-footer', `${ticket.channel} · espera ${ticket.waitingMinutes} min · SLA ${ticket.slaMinutesRemaining} min`)
         );
 
-        const right = create('div', 'ia-topbar-right');
-        right.append(createBadge('API mockada', 'success'), create('span', 'ia-avatar', 'AS'));
-
-        topbar.append(left, right);
-        return topbar;
+        return item;
       };
 
-      const createMetricsGrid = () => {
-        const grid = create('div', 'ia-grid cols-3');
+      const renderDashboardView = () => {
+        const wrap = el('div', 'op-dashboard-grid');
 
-        metrics.forEach((metric) => {
-          const label = create('p', 'ia-stat-label', metric.label);
-          const value = create('p', 'ia-stat-value', metric.value);
-          const footer = create('p', 'ia-text-muted', metric.footer);
-          grid.appendChild(createCard(label, value, footer));
+        const inQueue = tickets.filter((t) => t.status === 'IN_QUEUE' || t.status === 'NEW').length;
+        const inProgress = tickets.filter((t) => t.status === 'IN_PROGRESS').length;
+        const waiting = tickets.filter((t) => t.status === 'WAITING_CUSTOMER').length;
+        const closed = tickets.filter((t) => t.status === 'CLOSED').length;
+
+        wrap.append(
+          createStatCard('Total em fila', inQueue, 'Visão operacional em tempo real'),
+          createStatCard('Em atendimento', inProgress, 'Ativos neste momento'),
+          createStatCard('Aguardando cliente', waiting, 'Pendentes de retorno'),
+          createStatCard('Encerrados hoje', closed, 'Concluídos no período')
+        );
+
+        const alert = el('section', 'ia-card');
+        const body = el('div', 'ia-card-body');
+        body.append(
+          el('h3', 'op-section-title', 'Resumo do produto'),
+          el('p', null, 'Dashboard consolidado com dados do domínio: tickets, SLA, handoff, mensagens e auditoria.'),
+          el('p', null, 'Use os botões da topbar para navegar entre Fila, Meus Atendimentos, Atendimento e Supervisão.')
+        );
+        alert.appendChild(body);
+
+        const container = el('div');
+        container.append(wrap, alert);
+        return container;
+      };
+
+      const renderQueueView = () => {
+        const card = el('section', 'ia-card');
+        const body = el('div', 'ia-card-body');
+        body.append(el('h3', 'op-section-title', 'Fila de Atendimentos'));
+
+        const grouped = departments.map((department) => ({
+          department,
+          items: tickets.filter((t) => t.departmentId === department.id && (t.status === 'IN_QUEUE' || t.status === 'NEW'))
+        }));
+
+        const groups = el('div', 'op-grouped-queue');
+        grouped.forEach((group) => {
+          const block = el('div', 'op-queue-group');
+          block.append(el('h4', null, group.department.name));
+          if (!group.items.length) {
+            block.append(el('p', 'ia-text-muted', 'Sem tickets em fila neste departamento.'));
+          }
+          group.items.forEach((ticket) => {
+            block.append(
+              button({
+                label: `${ticket.id} · ${maps.customersById[ticket.customerId].name} · espera ${ticket.waitingMinutes} min`,
+                onClick: () => {
+                  state.selectedTicketId = ticket.id;
+                  state.currentView = 'atendimento';
+                  renderApp();
+                }
+              })
+            );
+          });
+          groups.appendChild(block);
         });
 
+        body.append(groups);
+        card.appendChild(body);
+        return card;
+      };
+
+      const renderMyTicketsView = () => {
+        const card = el('section', 'ia-card');
+        const body = el('div', 'ia-card-body');
+        body.append(el('h3', 'op-section-title', 'Meus Atendimentos'));
+        const list = el('div', 'op-my-tickets-list');
+
+        tickets
+          .filter((t) => t.assignedUserId === 'u-1')
+          .forEach((ticket) => {
+            list.append(
+              button({
+                label: `${ticket.id} · ${maps.customersById[ticket.customerId].name} · ${ticket.status}`,
+                onClick: () => {
+                  state.selectedTicketId = ticket.id;
+                  state.currentView = 'atendimento';
+                  renderApp();
+                }
+              })
+            );
+          });
+
+        body.append(list);
+        card.appendChild(body);
+        return card;
+      };
+
+      const renderSupervisaoView = () => {
+        const inQueue = tickets.filter((t) => t.status === 'IN_QUEUE' || t.status === 'NEW').length;
+        const inProgress = tickets.filter((t) => t.status === 'IN_PROGRESS').length;
+        const waiting = tickets.filter((t) => t.status === 'WAITING_CUSTOMER').length;
+        const closed = tickets.filter((t) => t.status === 'CLOSED').length;
+
+        const wrap = el('div', 'op-supervision-wrap');
+        const grid = el('div', 'op-supervision-grid');
+        grid.append(
+          createStatCard('Total em fila', inQueue, 'Visão operacional em tempo real'),
+          createStatCard('Em atendimento', inProgress, 'Ativos neste momento'),
+          createStatCard('Aguardando cliente', waiting, 'Pendentes de retorno'),
+          createStatCard('Encerrados hoje', closed, 'Concluídos no período')
+        );
+
+        const alerts = el('section', 'ia-card');
+        const body = el('div', 'ia-card-body');
+        body.append(
+          el('h3', 'op-section-title', 'Alertas de SLA'),
+          el('p', null, 'ATD-1296 em risco de SLA (8 min restantes).'),
+          el('p', null, '2 agentes online no departamento Atendimento CX.')
+        );
+        alerts.appendChild(body);
+
+        wrap.append(grid, alerts);
+        return wrap;
+      };
+
+      const renderAtendimentoView = () => {
+        const selectedTicket = tickets.find((t) => t.id === state.selectedTicketId) || tickets[0];
+        const selectedCustomer = maps.customersById[selectedTicket.customerId];
+        const selectedHandoff = handoffs.find((h) => h.ticketId === selectedTicket.id);
+        const selectedLogs = auditLogs.filter((log) => log.ticketId === selectedTicket.id);
+        const selectedMessages = state.messages
+          .filter((msg) => msg.ticketId === selectedTicket.id)
+          .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+        const grid = el('section', 'op-main-grid');
+
+        // Coluna esquerda
+        const left = el('div', 'op-col');
+
+        const summary = el('section', 'ia-card');
+        const summaryBody = el('div', 'ia-card-body');
+        const visible = filterTickets();
+        const counters = el('div', 'op-counters');
+        [
+          ['Total', visible.length],
+          ['Em fila', visible.filter((t) => t.status === 'IN_QUEUE' || t.status === 'NEW').length],
+          ['Em atendimento', visible.filter((t) => t.status === 'IN_PROGRESS').length],
+          ['Aguardando cliente', visible.filter((t) => t.status === 'WAITING_CUSTOMER').length]
+        ].forEach(([label, value]) => {
+          const c = el('div', 'op-counter');
+          c.append(el('p', 'op-counter-label', label), el('p', 'op-counter-value', String(value)));
+          counters.appendChild(c);
+        });
+        summaryBody.append(el('h3', 'op-section-title', 'Resumo da operação'), counters);
+        summary.appendChild(summaryBody);
+
+        const filters = el('section', 'ia-card');
+        const filtersBody = el('div', 'ia-card-body');
+        filtersBody.append(el('h3', 'op-section-title', 'Filtros'));
+
+        const statusSelect = el('select', 'op-filter-select');
+        ['ALL'].concat(Object.values(TicketStatus)).forEach((value) => {
+          const option = el('option', null, value);
+          option.value = value;
+          option.selected = value === state.statusFilter;
+          statusSelect.appendChild(option);
+        });
+        statusSelect.addEventListener('change', (ev) => {
+          state.statusFilter = ev.target.value;
+          renderApp();
+        });
+
+        const prioritySelect = el('select', 'op-filter-select');
+        ['ALL', 'LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].forEach((value) => {
+          const option = el('option', null, value);
+          option.value = value;
+          option.selected = value === state.priorityFilter;
+          prioritySelect.appendChild(option);
+        });
+        prioritySelect.addEventListener('change', (ev) => {
+          state.priorityFilter = ev.target.value;
+          renderApp();
+        });
+
+        filtersBody.append(el('label', 'op-filter-label', 'Status'), statusSelect, el('label', 'op-filter-label', 'Prioridade'), prioritySelect);
+        filters.appendChild(filtersBody);
+
+        const queueCard = el('section', 'ia-card');
+        const queueBody = el('div', 'ia-card-body');
+        queueBody.append(el('h3', 'op-section-title', 'Tickets em fila'));
+        const queueList = el('div', 'op-ticket-list');
+        visible
+          .filter((t) => !t.assignedUserId || t.status === 'IN_QUEUE' || t.status === 'NEW')
+          .forEach((t) => queueList.appendChild(renderTicketItem(t)));
+        queueBody.appendChild(queueList);
+        queueCard.appendChild(queueBody);
+
+        const myCard = el('section', 'ia-card');
+        const myBody = el('div', 'ia-card-body');
+        myBody.append(el('h3', 'op-section-title', 'Meus tickets'));
+        const myList = el('div', 'op-ticket-list');
+        visible.filter((t) => t.assignedUserId === 'u-1').forEach((t) => myList.appendChild(renderTicketItem(t)));
+        myBody.appendChild(myList);
+        myCard.appendChild(myBody);
+
+        left.append(summary, filters, queueCard, myCard);
+
+        // Coluna central
+        const center = el('div', 'op-col');
+
+        const timelineCard = el('section', 'ia-card');
+        const timelineBody = el('div', 'ia-card-body op-conversation-body');
+        timelineBody.append(el('h3', 'op-section-title', 'Conversation / Timeline'));
+        const timeline = el('div', 'op-timeline');
+
+        selectedMessages.forEach((message) => {
+          if (message.type === MessageType.SYSTEM || message.sender === MessageSender.SYSTEM) {
+            const sys = el('div', 'op-system-message');
+            sys.append(el('span', 'op-message-time', message.createdAt), el('span', null, message.content));
+            timeline.appendChild(sys);
+            return;
+          }
+
+          if (message.type === MessageType.INTERNAL_NOTE) {
+            const note = el('div', 'op-internal-note');
+            note.append(el('strong', null, 'Nota interna'), el('p', null, message.content), el('span', 'op-message-time', message.createdAt));
+            timeline.appendChild(note);
+            return;
+          }
+
+          const bubble = el('div', `op-message-bubble from-${message.sender.toLowerCase()}`);
+          bubble.append(
+            el('div', 'op-message-header', `${message.sender} · ${message.type}`),
+            el('p', 'op-message-content', message.content)
+          );
+
+          if (message.attachments && message.attachments.length) {
+            const wrap = el('div', 'op-attachments-wrap');
+            message.attachments.forEach((attachment) => {
+              const box = el('div', 'op-attachment');
+              box.append(el('strong', null, attachment.fileName), el('span', 'ia-text-muted', attachment.mimeType));
+              wrap.appendChild(box);
+            });
+            bubble.appendChild(wrap);
+          }
+
+          bubble.appendChild(el('span', 'op-message-time', message.createdAt));
+          timeline.appendChild(bubble);
+        });
+
+        timelineBody.appendChild(timeline);
+        timelineCard.appendChild(timelineBody);
+
+        const composerCard = el('section', 'ia-card');
+        const composerBody = el('div', 'ia-card-body');
+        composerBody.append(el('h3', 'op-section-title', 'Composer'));
+
+        const input = el('input', 'ia-input');
+        input.placeholder = 'Digite sua resposta para o cliente...';
+
+        const templatePicker = el('div', 'op-template-picker');
+        templatePicker.appendChild(el('strong', null, 'Modelos rápidos'));
+        [
+          'Olá! Recebi seu chamado e já estou verificando.',
+          'Poderia confirmar o número do pedido para prosseguir?',
+          'Encaminhei para o time responsável e retorno em instantes.'
+        ].forEach((template) => {
+          const tplBtn = el('button', 'op-template-btn', template);
+          tplBtn.type = 'button';
+          tplBtn.addEventListener('click', () => {
+            input.value = template;
+            templatePicker.classList.remove('is-open');
+          });
+          templatePicker.appendChild(tplBtn);
+        });
+
+        const sendMessage = () => {
+          if (!input.value.trim()) return;
+          state.messages.push({
+            id: `m-${Date.now()}`,
+            ticketId: selectedTicket.id,
+            sender: MessageSender.AGENT,
+            type: MessageType.TEXT,
+            content: input.value,
+            createdAt: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          });
+          input.value = '';
+          renderApp();
+        };
+
+        const addInternalNote = () => {
+          state.messages.push({
+            id: `m-${Date.now()}`,
+            ticketId: selectedTicket.id,
+            sender: MessageSender.AGENT,
+            type: MessageType.INTERNAL_NOTE,
+            content: 'Nota interna mockada adicionada pelo atendente.',
+            createdAt: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+          });
+          renderApp();
+        };
+
+        const actions = el('div', 'op-composer-actions');
+        actions.append(
+          button({ label: 'Áudio' }),
+          button({ label: 'Imagem' }),
+          button({ label: 'Documento' }),
+          button({ label: 'Nota interna', onClick: addInternalNote }),
+          button({ label: 'Mensagem modelo', onClick: () => templatePicker.classList.toggle('is-open') })
+        );
+
+        const footer = el('div', 'op-composer-footer');
+        footer.append(actions, button({ label: 'Enviar', variant: 'primary', onClick: sendMessage }));
+
+        composerBody.append(input, footer, templatePicker);
+        composerCard.appendChild(composerBody);
+
+        center.append(timelineCard, composerCard);
+
+        // Coluna direita
+        const right = el('div', 'op-col');
+
+        const customerCard = el('section', 'ia-card');
+        const customerBody = el('div', 'ia-card-body');
+        customerBody.append(
+          el('h3', 'op-section-title', 'Cliente'),
+          el('p', null, `Nome: ${selectedCustomer.name}`),
+          el('p', null, `Contato: ${selectedCustomer.identifier}`),
+          el('p', null, `Canal: ${selectedCustomer.channel}`),
+          el('p', null, `Tags: ${selectedCustomer.tags.join(', ')}`)
+        );
+        customerCard.appendChild(customerBody);
+
+        const ticketCard = el('section', 'ia-card');
+        const ticketBody = el('div', 'ia-card-body');
+        const badges = el('div', 'op-badges-inline');
+        badges.append(statusBadge(selectedTicket.status), priorityBadge(selectedTicket.priority));
+        ticketBody.append(
+          el('h3', 'op-section-title', 'Ticket'),
+          el('p', null, `Protocolo: ${selectedTicket.protocol}`),
+          el('p', null, `Departamento: ${maps.departmentsById[selectedTicket.departmentId].name}`),
+          el('p', null, `Responsável: ${maps.usersById[selectedTicket.assignedUserId]?.name || 'Não atribuído'}`),
+          badges,
+          slaIndicator(selectedTicket.slaMinutesRemaining)
+        );
+        ticketCard.appendChild(ticketBody);
+
+        const handoffCard = el('section', 'ia-card');
+        const handoffBody = el('div', 'ia-card-body');
+        handoffBody.append(el('h3', 'op-section-title', 'Handoff IA → humano'));
+        if (!selectedHandoff) {
+          handoffBody.append(el('p', 'ia-text-muted', 'Nenhum handoff para este ticket.'));
+        } else {
+          handoffBody.append(
+            el('p', null, `Status: ${selectedHandoff.status}`),
+            el('p', null, `Intenção: ${selectedHandoff.intencaoDetectada}`),
+            el('p', null, `Prioridade sugerida: ${selectedHandoff.prioridadeSugerida}`),
+            el('p', null, `Resumo IA: ${selectedHandoff.resumoGeradoIA}`),
+            el('p', null, `Dados coletados: ${JSON.stringify(selectedHandoff.dadosColetadosCliente)}`)
+          );
+        }
+        handoffCard.appendChild(handoffBody);
+
+        const auditCard = el('section', 'ia-card');
+        const auditBody = el('div', 'ia-card-body');
+        auditBody.append(el('h3', 'op-section-title', 'Histórico / Auditoria'));
+        const list = el('div', 'op-audit-list');
+        selectedLogs.forEach((log) => {
+          const item = el('div', 'op-audit-item');
+          item.append(el('strong', null, log.action), el('span', 'ia-text-muted', `${log.at} · ${log.actor}`));
+          list.appendChild(item);
+        });
+        auditBody.appendChild(list);
+        auditCard.appendChild(auditBody);
+
+        right.append(customerCard, ticketCard, handoffCard, auditCard);
+
+        grid.append(left, center, right);
         return grid;
       };
 
-      const createRecentTicketsCard = () => {
-        const header = create('div', 'ia-section-header');
-        const left = create('div');
-        left.append(
-          create('p', 'ia-section-title', 'Atendimentos recentes'),
-          create('p', 'ia-section-subtitle', 'Últimas interações registradas no sistema')
-        );
-        header.appendChild(left);
+      // ===== Shell =====
+      const renderApp = () => {
+        const app = document.getElementById('app');
+        app.innerHTML = '';
 
-        const list = create('ul', 'ia-list');
-        const toneByStatus = {
-          'Em andamento': 'info',
-          'Aguardando cliente': 'warning',
-          Novo: 'success'
-        };
+        const root = el('div', 'ia-app-layout');
+        const sidebar = el('aside', 'ia-sidebar');
+        const logo = el('div', 'ia-logo');
+        logo.append(el('div', 'ia-logo-fallback'), el('span', null, 'Icarus Atend'));
 
-        recentTickets.forEach((ticket) => {
-          const item = create('li', 'ia-list-item');
-          const ticketLeft = create('div');
-          ticketLeft.append(
-            create('p', 'ia-ticket-title', `${ticket.id} · ${ticket.customer}`),
-            create('p', 'ia-ticket-subtitle', `Canal: ${ticket.channel}`)
-          );
+        const nav = el('nav', 'ia-nav');
+        ['Dashboard', 'Fila', 'Meus Atendimentos', 'Atendimento', 'Supervisão', 'Clientes', 'Administração', 'Logs', 'Configurações'].forEach((label) => {
+          const key =
+            label === 'Dashboard'
+              ? 'dashboard'
+              : label === 'Fila'
+              ? 'fila'
+              : label === 'Meus Atendimentos'
+              ? 'meus'
+              : label === 'Atendimento'
+              ? 'atendimento'
+              : label === 'Supervisão'
+              ? 'supervisao'
+              : 'atendimento';
 
-          item.append(ticketLeft, createBadge(ticket.status, toneByStatus[ticket.status] || 'info'));
-          list.appendChild(item);
+          const item = el('button', `ia-nav-item ${state.currentView === key ? 'is-active' : ''}`, label);
+          item.type = 'button';
+          item.addEventListener('click', () => {
+            state.currentView = key;
+            renderApp();
+          });
+          nav.appendChild(item);
         });
 
-        return createCard(header, list);
-      };
+        sidebar.append(logo, nav);
 
-      const createOverviewCard = () => {
-        const header = create('div', 'ia-section-header');
-        const left = create('div');
+        const main = el('div', 'ia-main');
+        const topbar = el('header', 'ia-topbar');
+        const left = el('div');
         left.append(
-          create('p', 'ia-section-title', 'Visão geral operacional'),
-          create('p', 'ia-section-subtitle', 'Resumo para supervisão e coordenação de atendimento')
+          el('strong', null, 'Operação Icarus Atend'),
+          el('p', 'ia-text-muted', 'Fluxo completo de atendimento com histórico e contexto')
         );
-        header.appendChild(left);
+        left.lastChild.style.margin = '0.2rem 0 0';
 
-        const empty = create('div', 'ia-empty');
-        empty.append(
-          create('p', 'ia-empty-title', 'Painéis adicionais em evolução'),
-          create('p', 'ia-empty-description', 'Este preview foi otimizado para resposta HTML única em webhook.')
-        );
+        const right = el('div', 'op-topbar-actions');
+        [
+          ['dashboard', 'Dashboard'],
+          ['fila', 'Fila de Atendimentos'],
+          ['meus', 'Meus Atendimentos'],
+          ['atendimento', 'Tela de Atendimento'],
+          ['supervisao', 'Supervisão']
+        ].forEach(([key, label]) => {
+          right.append(
+            button({
+              label,
+              variant: state.currentView === key ? 'primary' : 'secondary',
+              onClick: () => {
+                state.currentView = key;
+                renderApp();
+              }
+            })
+          );
+        });
+        right.appendChild(badge('API mockada', 'info'));
 
-        return createCard(header, empty);
+        topbar.append(left, right);
+
+        const content = el('main', 'ia-content');
+
+        if (state.currentView === 'dashboard') content.appendChild(renderDashboardView());
+        else if (state.currentView === 'fila') content.appendChild(renderQueueView());
+        else if (state.currentView === 'meus') content.appendChild(renderMyTicketsView());
+        else if (state.currentView === 'supervisao') content.appendChild(renderSupervisaoView());
+        else content.appendChild(renderAtendimentoView());
+
+        main.append(topbar, content);
+        root.append(sidebar, main);
+        app.appendChild(root);
       };
 
-      const render = () => {
-        const root = document.getElementById('ia-preview-root');
-        root.innerHTML = '';
-
-        const layout = create('div', 'ia-app-layout');
-        const main = create('div', 'ia-main');
-        const content = create('div', 'ia-content');
-
-        const split = create('div', 'ia-grid cols-2');
-        split.append(createRecentTicketsCard(), createOverviewCard());
-
-        content.append(createMetricsGrid(), split);
-
-        main.append(createTopbar(), content);
-        layout.append(createSidebar(), main);
-        root.appendChild(layout);
-      };
-
-      render();
+      renderApp();
     </script>
   </body>
 </html>
