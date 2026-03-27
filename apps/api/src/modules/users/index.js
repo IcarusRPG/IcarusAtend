@@ -1,10 +1,14 @@
+import { UsersController } from './controller.js';
+
+const controller = new UsersController();
+
 const usersModule = {
   basePath: '/users',
   routes: [
     {
       method: 'GET',
       path: '/status',
-      handler: () => ({ module: 'users', status: 'ready' })
+      handler: () => controller.status()
     }
   ]
 };
