@@ -1,6 +1,8 @@
 import '/packages/ui/src/theme/index.css';
+import './styles/operational.css';
 import { resolveRoute } from './routes/index.js';
 import { apiClient } from './services/api-client.js';
+import { createAppState } from './state/app-state.js';
 
 const appElement = document.getElementById('app');
 
@@ -8,32 +10,24 @@ if (!appElement) {
   throw new Error('Elemento #app não encontrado.');
 }
 
-const render = () => {
+const store = createAppState();
+
+const render = async () => {
   const routeFactory = resolveRoute(window.location.pathname);
   appElement.innerHTML = '';
 
-  const page = routeFactory();
-  const pageElement = page.layout ?? page;
-  appElement.appendChild(pageElement);
-
-  return page;
-};
-
-const loadHealthStatus = async (page) => {
-  const topbar = page.topbar;
-  const badge = topbar?.querySelector('.ia-badge');
-
-  if (!badge) return;
+  let apiStatusLabel = 'API indisponível';
 
   try {
-    const response = await apiClient.health();
-    badge.textContent = `API ${response.status}`;
-    badge.className = 'ia-badge success';
+    const health = await apiClient.health();
+    apiStatusLabel = `API ${health.status}`;
   } catch {
-    badge.textContent = 'API indisponível';
-    badge.className = 'ia-badge error';
+    apiStatusLabel = 'API indisponível';
   }
+
+  const page = routeFactory({ store, apiStatusLabel });
+  const pageElement = page.layout ?? page;
+  appElement.appendChild(pageElement);
 };
 
-const page = render();
-loadHealthStatus(page);
+render();

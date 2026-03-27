@@ -6,20 +6,19 @@ Aplicação web do Icarus Atend.
 
 Disponibilizar uma base funcional e visual de produto com:
 - layout operacional SaaS (sidebar + topbar + conteúdo);
-- dashboard inicial com dados mockados;
-- base de rotas e cliente de API para evolução incremental.
+- fluxo operacional principal (fila, meus atendimentos, atendimento, supervisão);
+- timeline de conversa, contexto do ticket e handoff IA → humano;
+- estado local para simulação de operação sem backend real.
 
 ## Scripts
 
 - `npm run dev` — inicia servidor web local.
 - `npm run start` — inicia servidor web local.
 
-## Estrutura
+## Estrutura principal
 
-- `index.html` — entrada da aplicação.
-- `server.js` — servidor HTTP simples para ambiente local.
-- `src/main.js` — bootstrap da aplicação.
-- `src/routes` — resolução de rotas.
-- `src/pages` — páginas da aplicação.
-- `src/lib/mock-data.js` — dados mockados de dashboard.
-- `src/services` — integração com API.
+- `src/pages/dashboard-page.js` — casca operacional e troca de telas.
+- `src/components/operational` — componentes de domínio operacional.
+- `src/lib/domain-mocks.js` — mocks consistentes com domínio modelado.
+- `src/state/app-state.js` — estado local da interface.
+- `src/styles/operational.css` — estilos específicos das telas operacionais.
