@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const repoRoot = path.resolve(__dirname, '../..');
 
 const port = Number(process.env.WEB_PORT ?? 3000);
 const appName = process.env.WEB_APP_NAME ?? 'Icarus Atend';
@@ -28,6 +29,10 @@ const getFilePath = (urlPath) => {
 
   if (urlPath.startsWith('/src/')) {
     return path.join(__dirname, urlPath);
+  }
+
+  if (urlPath.startsWith('/packages/')) {
+    return path.join(repoRoot, urlPath);
   }
 
   return null;

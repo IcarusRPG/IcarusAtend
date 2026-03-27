@@ -1,3 +1,4 @@
+import '/packages/ui/src/theme/index.css';
 import { resolveRoute } from './routes/index.js';
 import { apiClient } from './services/api-client.js';
 
@@ -10,20 +11,29 @@ if (!appElement) {
 const render = () => {
   const routeFactory = resolveRoute(window.location.pathname);
   appElement.innerHTML = '';
-  appElement.appendChild(routeFactory());
+
+  const page = routeFactory();
+  const pageElement = page.layout ?? page;
+  appElement.appendChild(pageElement);
+
+  return page;
 };
 
-const loadHealthStatus = async () => {
-  const statusElement = document.getElementById('api-status');
-  if (!statusElement) return;
+const loadHealthStatus = async (page) => {
+  const topbar = page.topbar;
+  const badge = topbar?.querySelector('.ia-badge');
+
+  if (!badge) return;
 
   try {
     const response = await apiClient.health();
-    statusElement.textContent = `Status API: ${response.status}`;
+    badge.textContent = `API ${response.status}`;
+    badge.className = 'ia-badge success';
   } catch {
-    statusElement.textContent = 'Status API: indisponível';
+    badge.textContent = 'API indisponível';
+    badge.className = 'ia-badge error';
   }
 };
 
-render();
-loadHealthStatus();
+const page = render();
+loadHealthStatus(page);

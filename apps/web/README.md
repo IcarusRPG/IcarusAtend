@@ -4,10 +4,10 @@ Aplicação web do Icarus Atend.
 
 ## Objetivo nesta fase
 
-Disponibilizar uma base funcional de front-end com:
-- página inicial;
-- estrutura de rotas;
-- cliente de API para consumo de endpoints do backend.
+Disponibilizar uma base funcional e visual de produto com:
+- layout operacional SaaS (sidebar + topbar + conteúdo);
+- dashboard inicial com dados mockados;
+- base de rotas e cliente de API para evolução incremental.
 
 ## Scripts
 
@@ -21,4 +21,5 @@ Disponibilizar uma base funcional de front-end com:
 - `src/main.js` — bootstrap da aplicação.
 - `src/routes` — resolução de rotas.
 - `src/pages` — páginas da aplicação.
+- `src/lib/mock-data.js` — dados mockados de dashboard.
 - `src/services` — integração com API.

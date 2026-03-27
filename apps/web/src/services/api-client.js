@@ -15,4 +15,4 @@ const apiClient = {
   health: () => getJson('/health')
 };
 
-export { apiClient };
+export { apiClient, API_BASE_URL };

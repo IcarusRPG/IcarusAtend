@@ -1,10 +1,11 @@
-import { createHomePage } from '../pages/home-page.js';
+import { createDashboardPage } from '../pages/dashboard-page.js';
 
 const routes = {
-  '/': createHomePage,
-  '/app': createHomePage
+  '/': createDashboardPage,
+  '/app': createDashboardPage,
+  '/dashboard': createDashboardPage
 };
 
-const resolveRoute = (pathname) => routes[pathname] ?? createHomePage;
+const resolveRoute = (pathname) => routes[pathname] ?? createDashboardPage;
 
 export { resolveRoute };
